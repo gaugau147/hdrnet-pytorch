@@ -21,7 +21,7 @@ class HDRDataset(Dataset):
             transforms.ToTensor()
         ])
         self.full = transforms.Compose([
-            transforms.Resize(512, Image.BICUBIC),
+            transforms.Resize((512, 512), Image.BICUBIC),
             transforms.RandomHorizontalFlip(),
             transforms.RandomVerticalFlip(),
             transforms.ToTensor()
