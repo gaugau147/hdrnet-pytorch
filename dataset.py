@@ -21,7 +21,7 @@ class HDRDataset(Dataset):
             transforms.ToTensor()
         ])
         self.full = transforms.Compose([
-            transforms.Resize((1080, 1920), Image.BICUBIC),
+            transforms.Resize(512, Image.BICUBIC),
             transforms.RandomHorizontalFlip(),
             transforms.RandomVerticalFlip(),
             transforms.ToTensor()
@@ -37,9 +37,9 @@ class HDRDataset(Dataset):
         fname = os.path.split(self.in_files[idx])[-1]
         imagein = Image.open(self.in_files[idx]).convert('RGB')
         imageout = Image.open(os.path.join(self.image_path, 'output'+self.suffix, fname)).convert('RGB')
-        if imagein.size[0] < imagein.size[1]:
-            imagein = imagein.rotate(90, expand=True)
-            imageout = imageout.rotate(90, expand=True)
+        # if imagein.size[0] < imagein.size[1]:
+        #     imagein = imagein.rotate(90, expand=True)
+        #     imageout = imageout.rotate(90, expand=True)
         imagein_low = self.low(imagein)
         imagein_full = self.full(imagein)
         imageout = self.full(imageout)
