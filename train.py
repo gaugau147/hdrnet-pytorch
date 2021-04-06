@@ -208,7 +208,7 @@ if __name__ == '__main__':
     parser.add_argument('--net-output-size', type=int, default=512, help='Size of full-res input/output')
 
     parser.add_argument('--lr', type=float, default=1e-4, help='Learning rate')
-    parser.add_argument('--batch-size', type=int, default=32)
+    parser.add_argument('--batch-size', type=int, default=8)
     parser.add_argument('--epochs', type=int, default=10)
     parser.add_argument('--log-interval', type=int, default=10)
     parser.add_argument('--ckpt-interval', type=int, default=100)
