@@ -1,9 +1,11 @@
 import os
+import random
 from PIL import Image
 
 import torch
 from torchvision import transforms
 from torch.utils.data import Dataset
+
 
 class HDRDataset(Dataset):
     def __init__(self, image_path, params=None, suffix=''):
@@ -14,10 +16,14 @@ class HDRDataset(Dataset):
         fs = params['net_output_size']
         self.low = transforms.Compose([
             transforms.Resize((ls,ls), Image.BICUBIC),
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomVerticalFlip(),
             transforms.ToTensor()
         ])
         self.full = transforms.Compose([
-            transforms.Resize((fs,fs), Image.BICUBIC),
+            transforms.Resize((1080, 1920), Image.BICUBIC),
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomVerticalFlip(),
             transforms.ToTensor()
         ])
 
@@ -25,9 +31,15 @@ class HDRDataset(Dataset):
         return len(self.in_files)
 
     def __getitem__(self, idx):
+        seed = random.randint(0, 2147483647)
+        random.seed(seed)
+        torch.manual_seed(seed)
         fname = os.path.split(self.in_files[idx])[-1]
         imagein = Image.open(self.in_files[idx]).convert('RGB')
         imageout = Image.open(os.path.join(self.image_path, 'output'+self.suffix, fname)).convert('RGB')
+        if imagein.size[0] < imagein.size[1]:
+            imagein = imagein.rotate(90, expand=True)
+            imageout = imageout.rotate(90, expand=True)
         imagein_low = self.low(imagein)
         imagein_full = self.full(imagein)
         imageout = self.full(imageout)
