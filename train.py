@@ -141,12 +141,14 @@ class L_color_gaussian(nn.Module):
     
     def forward(self, enhanced, label):
         batch_size, _, h, w = enhanced.shape
+        s = 0.0
         for idx in range(batch_size):
             e = enhanced[idx].cpu().detach().numpy().transpose(1, 2, 0)
             l = label[idx].cpu().detach().numpy().transpose(1, 2, 0)
             e = cv2.bilateralFilter(e, 7, 100, 100)
             l = cv2.bilateralFilter(l, 7, 100, 100)
-        return 1.0 - ssim(e, l, multichannel=True)
+            s += 1.0 - ssim(e, l, multichannel=True)
+        return s
 
 
 def train(params=None):
@@ -187,7 +189,7 @@ def train(params=None):
             ##
             loss_exp = 0.1*torch.mean(_L_exp(res))
             loss_col = 0.2*torch.mean(_L_color(res))
-            loss_col_blur = 0.05*_L_color_blur(res, t)
+            loss_col_blur = 0.01*_L_color_blur(res, t)
             
             total_loss = mseloss(res, t) + loss_exp + loss_col + loss_col_blur
             total_loss.backward()
