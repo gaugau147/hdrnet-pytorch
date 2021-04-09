@@ -187,11 +187,11 @@ def train(params=None):
             res = model(low, full)
 
             ##
-            loss_exp = 0.1*torch.mean(_L_exp(res))
-            loss_col = 0.2*torch.mean(_L_color(res))
-            loss_col_blur = 0.002*_L_color_blur(res, t)
+            loss_exp = 0.01*torch.mean(_L_exp(res))
+            loss_col = 0.02*torch.mean(_L_color(res))
+            # loss_col_blur = 0.002*_L_color_blur(res, t)
             
-            total_loss = mseloss(res, t) + loss_exp + loss_col + loss_col_blur
+            total_loss = mseloss(res, t) + loss_exp + loss_col 
             total_loss.backward()
 
             if (count+1) % params['log_interval'] == 0:
