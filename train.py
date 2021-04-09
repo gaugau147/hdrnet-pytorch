@@ -166,9 +166,9 @@ def train(params=None):
     mseloss = torch.nn.MSELoss()
     optimizer = Adam(model.parameters(), params['lr'])
 
-    L_color = L_color()
-    L_exp = L_exp(16,0.6)
-    L_color_blur = L_color_gaussian()
+    _L_color = L_color()
+    _L_exp = L_exp(16,0.6)
+    _L_color_blur = L_color_gaussian()
 
     count = 0
     for e in range(params['epochs']):
@@ -182,9 +182,9 @@ def train(params=None):
             res = model(low, full)
 
             ##
-            loss_exp = 0.1*torch.mean(L_exp(res))
-            loss_col = 0.2*torch.mean(L_color(res))
-            loss_col_blur = 0.05*L_color_blur(res, t)
+            loss_exp = 0.1*torch.mean(_L_exp(res))
+            loss_col = 0.2*torch.mean(_L_color(res))
+            loss_col_blur = 0.05*_L_color_blur(res, t)
             
             total_loss = mseloss(res, t) + loss_exp + loss_col + loss_col_blur
             total_loss.backward()
