@@ -12,6 +12,7 @@ import torch.nn.functional as F
 import math
 from torch.optim import SGD, Adam
 from torch.utils.data import DataLoader
+from skimage.metrics import structural_similarity as ssim
 
 from dataset import HDRDataset
 from metrics import psnr
@@ -134,7 +135,15 @@ class Sa_Loss(nn.Module):
         k = torch.mean(k)
         return k
 
-
+class L_color_gaussian(nn.Module):
+    def __init__(self):
+        super(L_color_gaussian, self).__init__()
+    
+    def forward(self, enhanced, label):
+        batch_size, _, h, w = enhanced.shape
+        enhanced = cv2.bilateralFilter(enhanced, 7, 100, 100)
+        label = cv2.bilateralFilter(label, 7, 100, 100)
+        return 1.0 - ssim(enhanced, label, multichannel=True)
 
 
 def train(params=None):
@@ -157,9 +166,9 @@ def train(params=None):
     mseloss = torch.nn.MSELoss()
     optimizer = Adam(model.parameters(), params['lr'])
 
-    # L_color = Myloss.L_color()
-	# L_spa = Myloss.L_spa()
-	# L_exp = Myloss.L_exp(16,0.6)
+    L_color = L_color()
+    L_exp = L_exp(16,0.6)
+    L_color_blur = L_color_gaussian()
 
     count = 0
     for e in range(params['epochs']):
@@ -171,8 +180,13 @@ def train(params=None):
             full = full.to(device)
             t = target.to(device)
             res = model(low, full)
+
+            ##
+            loss_exp = 0.1*torch.mean(L_exp(res))
+            loss_col = 0.2*torch.mean(L_color(res))
+            loss_col_blur = 0.05*L_color_blur(res, t)
             
-            total_loss = mseloss(res, t)
+            total_loss = mseloss(res, t) + loss_exp + loss_col + loss_col_blur
             total_loss.backward()
 
             if (count+1) % params['log_interval'] == 0:
