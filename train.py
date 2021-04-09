@@ -142,8 +142,8 @@ class L_color_gaussian(nn.Module):
     def forward(self, enhanced, label):
         batch_size, _, h, w = enhanced.shape
         for idx in range(batch_size):
-            e = enhanced[idx].numpy().transpose(1, 2, 0)
-            l = label[idx].numpy().transpose(1, 2, 0)
+            e = enhanced[idx].cpu().numpy().transpose(1, 2, 0)
+            l = label[idx].cpu().numpy().transpose(1, 2, 0)
             pass
             e = cv2.bilateralFilter(e, 7, 100, 100)
             l = cv2.bilateralFilter(l, 7, 100, 100)
