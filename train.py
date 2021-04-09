@@ -144,7 +144,6 @@ class L_color_gaussian(nn.Module):
         for idx in range(batch_size):
             e = enhanced[idx].cpu().detach().numpy().transpose(1, 2, 0)
             l = label[idx].cpu().detach().numpy().transpose(1, 2, 0)
-            pass
             e = cv2.bilateralFilter(e, 7, 100, 100)
             l = cv2.bilateralFilter(l, 7, 100, 100)
         return 1.0 - ssim(e, l, multichannel=True)
