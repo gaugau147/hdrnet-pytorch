@@ -141,7 +141,7 @@ class L_color_gaussian(nn.Module):
     
     def forward(self, enhanced, label):
         batch_size, _, h, w = enhanced.shape
-        for idx in batch_size:
+        for idx in range(batch_size):
             e = enhanced[idx].numpy().transpose(1, 2, 0)
             l = label[idx].numpy().transpose(1, 2, 0)
             pass
