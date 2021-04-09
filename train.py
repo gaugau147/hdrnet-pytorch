@@ -141,9 +141,13 @@ class L_color_gaussian(nn.Module):
     
     def forward(self, enhanced, label):
         batch_size, _, h, w = enhanced.shape
-        enhanced = cv2.bilateralFilter(enhanced, 7, 100, 100)
-        label = cv2.bilateralFilter(label, 7, 100, 100)
-        return 1.0 - ssim(enhanced, label, multichannel=True)
+        for idx in batch_size:
+            e = enhanced[idx].numpy().transpose(1, 2, 0)
+            l = label[idx].numpy().transpose(1, 2, 0)
+            pass
+            e = cv2.bilateralFilter(e, 7, 100, 100)
+            l = cv2.bilateralFilter(l, 7, 100, 100)
+        return 1.0 - ssim(e, l, multichannel=True)
 
 
 def train(params=None):
