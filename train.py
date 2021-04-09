@@ -189,7 +189,7 @@ def train(params=None):
             ##
             loss_exp = 0.1*torch.mean(_L_exp(res))
             loss_col = 0.2*torch.mean(_L_color(res))
-            loss_col_blur = 0.005*_L_color_blur(res, t)
+            loss_col_blur = 0.002*_L_color_blur(res, t)
             
             total_loss = mseloss(res, t) + loss_exp + loss_col + loss_col_blur
             total_loss.backward()
