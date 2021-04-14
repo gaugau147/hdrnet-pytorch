@@ -19,6 +19,11 @@ def test(ckpt, args={}):
     tensor = transforms.Compose([
         transforms.ToTensor(),
     ])
+    if not os.path.exists(params['output']):
+        os.makedirs(params['output'])
+    
+    input_images = os.listdir(params['input'])
+
     low = tensor(resize(load_image(params['test_image']),params['net_input_size'],strict=True).astype(np.float32)).repeat(1,1,1,1)/255
     full = tensor(load_image(params['test_image']).astype(np.float32)).repeat(1,1,1,1)/255
     
@@ -29,11 +34,13 @@ def test(ckpt, args={}):
         model.load_state_dict(state_dict)
         model.eval()
         model.to(device)
-        img = model(low, full)
-        print('MIN:',torch.min(img),'MAX:',torch.max(img))
-        img = (img.cpu().detach().numpy()).transpose(0,2,3,1)[0]
-        img = skimage.exposure.rescale_intensity(img, out_range=(0.0,255.0)).astype(np.uint8)
-        cv2.imwrite(params['test_out'], img[...,::-1])
+        for image in input_images:
+            low = tensor(resize(load_image(os.path.join(params['input'], image)),params['net_input_size'],strict=True).astype(np.float32)).repeat(1,1,1,1)/255
+            full = tensor(load_image(os.path.join(params['input'], image)).astype(np.float32)).repeat(1,1,1,1)/255
+            img = model(low, full)        
+            img = (img.cpu().detach().numpy()).transpose(0,2,3,1)[0]
+            img = skimage.exposure.rescale_intensity(img, out_range=(0.0,255.0)).astype(np.uint8)
+            cv2.imwrite(os.path.join(params['test_out'], image), img[...,::-1])
 
 if __name__ == '__main__':
     import argparse
