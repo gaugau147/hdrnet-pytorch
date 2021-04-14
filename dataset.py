@@ -52,4 +52,5 @@ class HDRDataset(Dataset):
             files.extend(filenames)
             break
         files = sorted([os.path.join(in_path, x) for x in files])
+        random.shuffle(files)
         return files
