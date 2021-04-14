@@ -47,8 +47,8 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='HDRNet Inference')
     parser.add_argument('--checkpoint', type=str, help='model state path')
-    parser.add_argument('--input', type=str, dest="test_image", help='image path')
-    parser.add_argument('--output', type=str, dest="test_out", help='output image path')
+    parser.add_argument('--input', type=str, dest="input", help='image path')
+    parser.add_argument('--output', type=str, dest="output", help='output image path')
 
     args = vars(parser.parse_args())
 
