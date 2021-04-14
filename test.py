@@ -14,6 +14,7 @@ def test(ckpt, args={}):
     state_dict = torch.load(ckpt)
     state_dict, params = load_params(state_dict)
     params.update(args)
+    print(params)
 
     device = torch.device("cuda")
     tensor = transforms.Compose([
@@ -37,7 +38,7 @@ def test(ckpt, args={}):
             img = model(low, full)        
             img = (img.cpu().detach().numpy()).transpose(0,2,3,1)[0]
             img = skimage.exposure.rescale_intensity(img, out_range=(0.0,255.0)).astype(np.uint8)
-            cv2.imwrite(os.path.join(params['test_out'], image), img[...,::-1])
+            cv2.imwrite(os.path.join(params['output'], image), img[...,::-1])
 
 if __name__ == '__main__':
     import argparse
