@@ -24,11 +24,6 @@ def test(ckpt, args={}):
     
     input_images = os.listdir(params['input'])
 
-    low = tensor(resize(load_image(params['test_image']),params['net_input_size'],strict=True).astype(np.float32)).repeat(1,1,1,1)/255
-    full = tensor(load_image(params['test_image']).astype(np.float32)).repeat(1,1,1,1)/255
-    
-    low = low.to(device)
-    full = full.to(device)
     with torch.no_grad():
         model = HDRPointwiseNN(params=params)
         model.load_state_dict(state_dict)
@@ -37,6 +32,8 @@ def test(ckpt, args={}):
         for image in input_images:
             low = tensor(resize(load_image(os.path.join(params['input'], image)),params['net_input_size'],strict=True).astype(np.float32)).repeat(1,1,1,1)/255
             full = tensor(load_image(os.path.join(params['input'], image)).astype(np.float32)).repeat(1,1,1,1)/255
+            low = low.to(device)
+            full = full.to(device)
             img = model(low, full)        
             img = (img.cpu().detach().numpy()).transpose(0,2,3,1)[0]
             img = skimage.exposure.rescale_intensity(img, out_range=(0.0,255.0)).astype(np.uint8)
