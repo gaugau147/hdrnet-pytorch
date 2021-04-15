@@ -189,7 +189,7 @@ def train(params=None):
 
             ##
             # loss_TV = 200*L_TV(A)
-            loss_spa = 0.004*torch.mean(L_spa(res, full))
+            loss_spa = 0.004*torch.mean(_L_spa(res, full))
             loss_exp = 0.02*torch.mean(_L_exp(res))
             loss_col = 0.04*torch.mean(_L_color(res))
             # loss_col_blur = 0.002*_L_color_blur(res, t)
