@@ -216,8 +216,8 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='HDRNet Inference')
     parser.add_argument('--ckpt-path', type=str, default='./ch', help='Model checkpoint path')
-    parser.add_argument('--test-image', type=str, dest="test_image", help='Test image path')
-    parser.add_argument('--test-out', type=str, default='out.png', dest="test_out", help='Output test image path')
+    parser.add_argument('--test-image', type=str, dest="input", help='Test image path')
+    parser.add_argument('--test-out', type=str, dest="output", help='Output test image path')
 
     parser.add_argument('--luma-bins', type=int, default=8)
     parser.add_argument('--channel-multiplier', default=1, type=int)
