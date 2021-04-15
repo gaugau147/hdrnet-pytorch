@@ -173,7 +173,8 @@ def train(params=None):
 
     _L_color = L_color()
     _L_exp = L_exp(16,0.6)
-    _L_color_blur = L_color_gaussian()
+    _L_spa = L_spa()
+    # _L_TV = L_TV()
 
     count = 0
     for e in range(params['epochs']):
@@ -187,8 +188,10 @@ def train(params=None):
             res = model(low, full)
 
             ##
-            loss_exp = 0.01*torch.mean(_L_exp(res))
-            loss_col = 0.02*torch.mean(_L_color(res))
+            # loss_TV = 200*L_TV(A)
+            loss_spa = 0.004*torch.mean(L_spa(res, full))
+            loss_exp = 0.02*torch.mean(_L_exp(res))
+            loss_col = 0.04*torch.mean(_L_color(res))
             # loss_col_blur = 0.002*_L_color_blur(res, t)
             
             total_loss = mseloss(res, t) + loss_exp + loss_col 
